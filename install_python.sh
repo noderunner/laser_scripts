@@ -11,6 +11,8 @@
 # and will probably even break across major versions.
 
 PYTHON_VERSION="3.7.2"
+PYTHON_BINARY="python3.7"
+PIP_BINARY="pip3.7"
 OFFICIAL_MD5="02a75015f7cd845e27b85192bb0ca4cb"
 TEMP_DIR="/tmp/python-${PYTHON_VERSION}-scripted-install"
 
@@ -49,6 +51,20 @@ make && make altinstall
 echo "========INSTALLING PIP, SETUPTOOLS, AND WHEEL========="
 wget https://bootstrap.pypa.io/get-pip.py
 python3.7 get-pip.py
+
+echo "========DEFAULTING TO NEW PYTHON========="
+alternatives --install /usr/bin/python python /usr/bin/python2 50
+alternatives --install /usr/bin/python python /usr/local/bin/${PYTHON_BINARY} 100
+alternatives --install /usr/bin/pip pip /usr/local/bin/${PIP_BINARY} 50
+
+echo "========UPDATING PIP========="
+# CentOS 6/7 has an annoying feature where /usr/local/bin is hardcoded into the bash
+# binary $PATH BEFORE /usr/bin, and /bin, meaning that the exising /usr/local/bin/pip
+# will take precedence in the PATH before /usr/bin/pip, rendering alternatives moot.
+# To work around this, I just rename the binary for the old pip, which of course will
+# break that RPM.
+mv /usr/local/bin/pip /usr/local/bin/pip.old
+/usr/local/bin/${PIP_BINARY} install --upgrade pip
 
 echo "========INSTALL COMPLETE========="
 echo "To remove temporary files: rm -rf ${TEMP_DIR}"
