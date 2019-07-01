@@ -17,9 +17,9 @@ OFFICIAL_MD5="02a75015f7cd845e27b85192bb0ca4cb"
 TEMP_DIR="/tmp/python-$PYTHON_VERSION-scripted-install"
 
 # Install pre-requisite tools
-echo "========INSTALLING PREREQUISITE PACKAGES========="
-yum -y update
-yum -y groupinstall "development tools"
+echo "========INSTALLING PREREQUISITE PACKAGES=========" >> /cloud.log
+yum -y update >> /cloud.log
+yum -y groupinstall "development tools" >> /cloud.log
 # These are needed for compilation of all Python features.
 yum -y install zlib-devel bzip2-devel \
     openssl-devel ncurses-devel \
