@@ -52,10 +52,10 @@ echo "========INSTALLING PIP, SETUPTOOLS, AND WHEEL========="
 wget https://bootstrap.pypa.io/get-pip.py
 python3.7 get-pip.py
 
-echo "========DEFAULTING TO NEW PYTHON========="
-alternatives --install /usr/bin/python python /usr/bin/python2 50
-alternatives --install /usr/bin/python python /usr/local/bin/${PYTHON_BINARY} 100
-alternatives --install /usr/bin/pip pip /usr/local/bin/${PIP_BINARY} 50
+# echo "========DEFAULTING TO NEW PYTHON========="
+# alternatives --install /usr/bin/python python /usr/bin/python2 50
+# alternatives --install /usr/bin/python python /usr/local/bin/${PYTHON_BINARY} 100
+# alternatives --install /usr/bin/pip pip /usr/local/bin/${PIP_BINARY} 50
 
 echo "========UPDATING PIP========="
 # CentOS 6/7 has an annoying feature where /usr/local/bin is hardcoded into the bash
@@ -65,6 +65,10 @@ echo "========UPDATING PIP========="
 # break that RPM.
 mv /usr/local/bin/pip /usr/local/bin/pip.old
 /usr/local/bin/${PIP_BINARY} install --upgrade pip
+
+echo "========UPDATING SHARED LIBS========="
+echo "/usr/local/lib/" >> /etc/ld.so.conf
+ldconfig
 
 echo "========INSTALL COMPLETE========="
 echo "To remove temporary files: rm -rf ${TEMP_DIR}"
