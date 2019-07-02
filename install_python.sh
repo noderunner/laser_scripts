@@ -70,5 +70,9 @@ echo "========UPDATING SHARED LIBS========="
 echo "/usr/local/lib/" >> /etc/ld.so.conf
 ldconfig
 
+echo "========CONFIGURING VIRTUAL ENVIRONMENTSE========="
+sudo /usr/local/bin/${PYTHON_BINARY} install virtualenv
+/usr/local/bin/virtualenv /usr/local/bin/venv/default
+
 echo "========INSTALL COMPLETE========="
 echo "To remove temporary files: rm -rf ${TEMP_DIR}"
