@@ -34,7 +34,7 @@ echo "========DOWNLOADING PYTHON ${PYTHON_VERSION}========="
 mkdir -p ${TEMP_DIR}; cd ${TEMP_DIR}
 wget https://www.python.org/ftp/python/${PYTHON_VERSION}/Python-${PYTHON_VERSION}.tgz
 md5=$(md5sum Python-${PYTHON_VERSION}.tgz |awk '{print $1}')
-if [[${OFFICIAL_MD5} -ne ${md5}]]; then
+if [[ "${OFFICIAL_MD5}" -ne "${md5}" ]]; then
     echo "ERROR: MD5 mismatch!"
     echo "Expected MD5: ${OFFICIAL_MD5}"
     echo "Actual MD5: ${md5}"
@@ -57,22 +57,24 @@ python3.7 get-pip.py
 # alternatives --install /usr/bin/python python /usr/local/bin/${PYTHON_BINARY} 100
 # alternatives --install /usr/bin/pip pip /usr/local/bin/${PIP_BINARY} 50
 
-echo "========UPDATING PIP========="
+# echo "========UPDATING PIP========="
 # CentOS 6/7 has an annoying feature where /usr/local/bin is hardcoded into the bash
 # binary $PATH BEFORE /usr/bin, and /bin, meaning that the exising /usr/local/bin/pip
 # will take precedence in the PATH before /usr/bin/pip, rendering alternatives moot.
 # To work around this, I just rename the binary for the old pip, which of course will
 # break that RPM.
-mv /usr/local/bin/pip /usr/local/bin/pip.old
-/usr/local/bin/${PIP_BINARY} install --upgrade pip
+# mv /usr/local/bin/pip /usr/local/bin/pip.old
+# /usr/local/bin/${PIP_BINARY} install --upgrade pip
 
 echo "========UPDATING SHARED LIBS========="
 echo "/usr/local/lib/" >> /etc/ld.so.conf
 ldconfig
 
-echo "========CONFIGURING VIRTUAL ENVIRONMENTSE========="
+echo "========CONFIGURING VIRTUAL ENVIRONMENTS========="
 sudo /usr/local/bin/${PYTHON_BINARY} install virtualenv
-/usr/local/bin/virtualenv /usr/local/bin/venv/default
+/usr/local/bin/virtualenv /usr/local/venv/default
+source /usr/local/venv/default/bin/activate
+pip install powerline-status
 
 echo "========INSTALL COMPLETE========="
 echo "To remove temporary files: rm -rf ${TEMP_DIR}"
