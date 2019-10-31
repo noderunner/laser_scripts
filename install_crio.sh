@@ -16,7 +16,7 @@ EOF
 sysctl --system
 
 echo "========ADDING CRI-O YUM REPO========="
-yum-config-manager --add-repo=https://cbs.centos.org/repos/paas7-crio-115-release/x86_64/os/
+yum-config-manager --add-repo=https://cbs.centos.org/repos/paas7-crio-311-candidate/x86_64/os/
 
 echo "========INSTALLING CRI-O========="
 yum -y install --nogpgcheck cri-o
