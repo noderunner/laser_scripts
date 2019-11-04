@@ -24,6 +24,7 @@ yum -y install --nogpgcheck cri-o
 echo "========STARTING CRI-O========="
 systemctl start crio
 
+echo "========ADDING K8S YUM REPO========="
 cat <<EOF > /etc/yum.repos.d/kubernetes.repo
 [kubernetes]
 name=Kubernetes
@@ -34,10 +35,18 @@ repo_gpgcheck=1
 gpgkey=https://packages.cloud.google.com/yum/doc/yum-key.gpg https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
 EOF
 
-# Set SELinux in permissive mode (effectively disabling it)
+echo "========INSTALLING K8S PACKAGES========="
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+systemctl enable --now kubelet
+
+echo "========DISABLING SELINUX========="
 setenforce 0
 sed -i 's/^SELINUX=enforcing$/SELINUX=permissive/' /etc/selinux/config
 
-yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+echo "========DISABLING SWAP========="
+/usr/sbin/swapoff -a
+sed -i '/swap/d' /etc/fstab
 
-systemctl enable --now kubelet
+echo "========DISABLING FIREWALLD========="
+systemctl stop firewalld
+systemctl disable firewalld
